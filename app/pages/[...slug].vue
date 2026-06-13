@@ -1,18 +1,9 @@
-<script setup lang="ts">
-const route = useRoute()
-
-const { data: page } = await useAsyncData('page-' + route.path, () => {
-  return queryCollection('content').path(route.path).first()
-})
-
-if (!page.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
-}
-</script>
-
 <template>
-  <ContentRenderer
-    v-if="page"
-    :value="page"
-  />
+  <main class="min-h-screen bg-[#0d0d0d] text-white">
+    <ContentDoc />
+  </main>
 </template>
+
+<script setup>
+// This catches the route parameters automatically behind the scenes
+</script>
