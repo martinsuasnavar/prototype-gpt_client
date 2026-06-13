@@ -1,21 +1,20 @@
-<template>
-  <main class="min-h-screen bg-[#0d0d0d] text-white p-6 md:p-8">
-    
-    <ContentDoc v-slot="{ doc }">
-      <article class="max-w-none prose prose-invert">
-        <ContentRenderer :value="doc" />
-      </article>
-    </ContentDoc>
+<script setup lang="ts">
+const route = useRoute()
 
-    <template #empty>
-      <div class="flex flex-col items-center justify-center min-h-[50vh] text-neutral-500">
-        <p class="text-base italic">No document content found at this route template layout.</p>
-      </div>
-    </template>
+// 1. Fetch data for the current path
+const { data: page } = await useAsyncData('page-' + route.path, () => {
+  return queryCollection('content').path(route.path).first()
+})
 
-  </main>
-</template>
-
-<script setup>
-// Nuxt Content v3 handles the route matching automatically behind the scenes via the filename token!
+// 2. If the page doesn't exist, quietly redirect them to the home page
+if (!page.value) {
+  await navigateTo('/')
+}
 </script>
+
+<template>
+  <ContentRenderer
+    v-if="page"
+    :value="page"
+  />
+</template>
